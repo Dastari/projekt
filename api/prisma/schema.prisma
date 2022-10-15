@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator typegraphql {
+  provider = "typegraphql-prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  /// @TypeGraphQL.omit(output: true, input: true)
+  email String @unique
+
+  /// @TypeGraphQL.omit(output: true, input: true)
+  password String
+
+  name      String?
+  confirmed Boolean @default(false)
+  msoid     String?
+
+  tokens   Token[]
+  /// @TypeGraphQL.omit(output: true, input: true)
+  role     Role    @relation(fields: [roleName], references: [name], onDelete: Cascade)
+  roleName String
+}
+
+model Role {
+  name        String       @id
+  users       User[]
+  permissions Permission[]
+}
+
+model Permission {
+  id String @id @default(uuid())
+
+  role     Role?  @relation(fields: [roleName], references: [name], onDelete: Cascade)
+  roleName String
+}
+
+model Token {
+  token  String @id
+  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+}
+
+model Log {
+  id       String   @id @default(uuid())
+  date     DateTime @default(now())
+  severity String   @default("info")
+  message  String?
+}
+
+model Setting {
+  name  String @id
+  value String
+}
