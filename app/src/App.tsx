@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy } from "react";
 
 import { gql, useQuery } from "@apollo/client";
 import { Box, CssBaseline } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import Home from "../routes/Home";
-import Initialise from "../routes/Initialise";
-import Error from "./Error";
-import Header from "./header/Header";
-import Loading from "./Loading";
+import { Error, Header, Loading } from "@/components";
+
+const Home = lazy(() => import("./routes/Home"));
+const Initialise = lazy(() => import("./routes/Initialise"));
 
 const SETTINGS = gql`
   query settings {
@@ -26,16 +25,6 @@ const App = () => {
       setInitialised(false);
     }
   }, [error]);
-
-  // client.on("message", (message) => {
-  //   if (message.type === "next") {
-  //     (message as NextMessage)?.payload?.errors?.map((error) => {
-  //       if (error.extensions.code === "UNINITIALISED") {
-  //         setInitialised(false);
-  //       }
-  //     });
-  //   }
-  // });
 
   if (!initialised) return <Initialise />;
   if (error) return <Error error={error} />;

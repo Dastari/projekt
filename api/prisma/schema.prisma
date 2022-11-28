@@ -28,23 +28,15 @@ model User {
   confirmed Boolean @default(false)
   msoid     String?
 
-  tokens   Token[]
+  tokens      Token[]
   /// @TypeGraphQL.omit(output: true, input: true)
-  role     Role    @relation(fields: [roleName], references: [name], onDelete: Cascade)
-  roleName String
-}
-
-model Role {
-  name        String       @id
-  users       User[]
   permissions Permission[]
 }
 
 model Permission {
-  id String @id @default(uuid())
-
-  role     Role?  @relation(fields: [roleName], references: [name], onDelete: Cascade)
-  roleName String
+  name   String  @id @unique
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }
 
 model Token {

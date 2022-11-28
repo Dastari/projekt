@@ -1,6 +1,6 @@
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 
-const Header = () => {
+export const Header = () => {
   return (
     <AppBar elevation={0} position="relative">
       <Toolbar>
@@ -13,5 +13,3 @@ const Header = () => {
     </AppBar>
   );
 };
-
-export default Header;

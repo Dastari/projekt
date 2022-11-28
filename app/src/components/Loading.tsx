@@ -1,6 +1,6 @@
 import { Box, CircularProgress, CssBaseline } from "@mui/material";
 
-const Loading = () => {
+export const Loading = () => {
   return (
     <Box sx={{ height: "100%", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <CssBaseline />
@@ -8,5 +8,3 @@ const Loading = () => {
     </Box>
   );
 };
-
-export default Loading;

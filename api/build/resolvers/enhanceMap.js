@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.modelsEnhanceMap = exports.resolversEnhanceMap = void 0;
 var type_graphql_1 = require("type-graphql");
 var userActionsConfig = {
-    _all: [(0, type_graphql_1.Authorized)(["Site Administrator", "Administrator"])],
+    _all: [(0, type_graphql_1.Authorized)(["Administrator"])],
 };
 var userEnhanceConfig = {};
 exports.resolversEnhanceMap = {

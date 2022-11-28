@@ -1,5 +1,5 @@
 import { User } from "@generated/type-graphql";
-export declare type AuthResponse = {
+export type AuthResponse = {
     token: string;
     user: Partial<User>;
 };
