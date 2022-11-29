@@ -57,6 +57,7 @@ const main = async () => {
       },
 
       onOperation: async (_ctx, _message, _args, results) => {
+        console.log("Message", _message);
         return existsSync(FIRSTRUN)
           ? { errors: [new ApolloError("This Projekt has not been initiaised", "UNINITIALISED")] }
           : results;
