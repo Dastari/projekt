@@ -6,9 +6,6 @@ export const Header = () => {
       <Toolbar>
         <Typography variant="h5">Projekt</Typography>
         <Box sx={{ flexGrow: 1 }} />
-        {/* <IconButton color="inherit" LinkComponent={Link} href="/home">
-          <Settings />
-        </IconButton> */}
       </Toolbar>
     </AppBar>
   );

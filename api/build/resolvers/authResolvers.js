@@ -62,7 +62,7 @@ var AuthResolvers = /** @class */ (function () {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, prisma.user.findUnique({
                             where: { email: email },
-                            select: { id: true, name: true, password: true, roleName: true },
+                            select: { id: true, name: true, password: true, permissions: true },
                         })];
                     case 1:
                         user = _b.sent();
@@ -75,7 +75,9 @@ var AuthResolvers = /** @class */ (function () {
                                         resolve(new graphql_1.GraphQLError(error.message));
                                     }
                                     if (response) {
-                                        resolve((0, jsonwebtoken_1.sign)({ user: { id: user.id, name: user.name, roleName: user.roleName } }, JWT_SECRET, { expiresIn: "1h" }));
+                                        resolve((0, jsonwebtoken_1.sign)({ user: { id: user.id, name: user.name, permissions: user.permissions } }, JWT_SECRET, {
+                                            expiresIn: "1h",
+                                        }));
                                     }
                                     else {
                                         resolve(new graphql_1.GraphQLError("Invalid email address or password"));

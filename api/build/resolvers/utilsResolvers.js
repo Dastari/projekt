@@ -75,7 +75,7 @@ var UtilsResolver = /** @class */ (function () {
     UtilsResolver.prototype.initialize = function (_a, projektName, email, name) {
         var prisma = _a.prisma;
         return __awaiter(this, void 0, void 0, function () {
-            var passphrase, role, user, _b, _c;
+            var passphrase, permission, user, _b, _c;
             var _d, _e;
             return __generator(this, function (_f) {
                 switch (_f.label) {
@@ -92,16 +92,16 @@ var UtilsResolver = /** @class */ (function () {
                             })];
                     case 2:
                         _f.sent();
-                        return [4 /*yield*/, prisma.role.deleteMany({})];
+                        return [4 /*yield*/, prisma.permission.deleteMany({})];
                     case 3:
                         _f.sent();
-                        return [4 /*yield*/, prisma.role.create({
+                        return [4 /*yield*/, prisma.permission.create({
                                 data: {
-                                    name: "Site Administrator",
+                                    name: "Global Administrator",
                                 },
                             })];
                     case 4:
-                        role = _f.sent();
+                        permission = _f.sent();
                         return [4 /*yield*/, prisma.user.deleteMany({})];
                     case 5:
                         _f.sent();
@@ -113,7 +113,7 @@ var UtilsResolver = /** @class */ (function () {
                         };
                         return [4 /*yield*/, (0, bcrypt_1.hash)(passphrase, SALT)];
                     case 6: return [4 /*yield*/, _c.apply(_b, [(_d.data = (_e.password = _f.sent(),
-                                _e.roleName = role.name,
+                                _e.permissions = { connect: { name: "Global Administrator" } },
                                 _e),
                                 _d)])];
                     case 7:

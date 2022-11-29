@@ -28,7 +28,10 @@ export class UtilsResolver {
     @Ctx() { prisma }: Context,
     @Arg("projektName", () => String, { nullable: false }) projektName: string,
     @Arg("email", () => String, { nullable: false }) email: string,
-    @Arg("name", () => String, { nullable: false }) name: string
+    @Arg("name", () => String, { nullable: false }) name: string,
+    @Arg("logo", () => String, { nullable: false }) logo: string,
+    @Arg("darkTheme", () => GraphQLJSON, { nullable: false }) darkTheme: JSON,
+    @Arg("lightTheme", () => GraphQLJSON, { nullable: false }) lightTheme: JSON
   ): Promise<false | String> {
     const passphrase = generate({ titlecase: true, numbers: false });
 
@@ -37,6 +40,27 @@ export class UtilsResolver {
       data: {
         name: "projektName",
         value: projektName,
+      },
+    });
+
+    await prisma.setting.create({
+      data: {
+        name: "logo",
+        value: logo,
+      },
+    });
+
+    await prisma.setting.create({
+      data: {
+        name: "darkTheme",
+        value: JSON.stringify(darkTheme),
+      },
+    });
+
+    await prisma.setting.create({
+      data: {
+        name: "lightTheme",
+        value: JSON.stringify(lightTheme),
       },
     });
 
