@@ -15,7 +15,7 @@ export class AuthResolvers {
   ): Promise<String | GraphQLError> {
     const user = await prisma.user.findUnique({
       where: { email: email },
-      select: { id: true, name: true, password: true, roleName: true },
+      select: { id: true, name: true, password: true, permissions: true },
     });
 
     if (!user) {
@@ -29,7 +29,9 @@ export class AuthResolvers {
         }
         if (response) {
           resolve(
-            sign({ user: { id: user.id, name: user.name, roleName: user.roleName } }, JWT_SECRET, { expiresIn: "1h" })
+            sign({ user: { id: user.id, name: user.name, permissions: user.permissions } }, JWT_SECRET, {
+              expiresIn: "1h",
+            })
           );
         } else {
           resolve(new GraphQLError("Invalid email address or password"));

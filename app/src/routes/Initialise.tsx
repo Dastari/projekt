@@ -7,21 +7,28 @@ import {
   createTheme,
   CssBaseline,
   Fade,
+  FormControlLabel,
   Grid,
+  Switch,
   TextField,
+  ThemeOptions,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { ColorDemo } from "@/components";
+import { ColorDemo, ErrorBoundary } from "@/components";
 import JSONParse from "@/utils/jsonParse";
+import { useEffect, useState } from "react";
 
 const InitialiseSchema = Yup.object().shape({
   projektName: Yup.string().min(2, "is too short").max(50, "is too long").required("is required"),
   projektLogo: Yup.string().url("must be a valid url"),
-  projektTheme: Yup.string().test("isJson", "is not valid JSON", (value) => {
+  projektDarkTheme: Yup.string().test("isJson", "is not valid JSON", (value) => {
+    return value && JSONParse(value) ? true : false;
+  }),
+  projektLightTheme: Yup.string().test("isJson", "is not valid JSON", (value) => {
     return value && JSONParse(value) ? true : false;
   }),
   name: Yup.string().min(2, "is too short").max(50, "is too long").required("is required"),
@@ -30,24 +37,33 @@ const InitialiseSchema = Yup.object().shape({
 
 const Initialise = () => {
   const offline = false;
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [theme, setTheme] = useState<ThemeOptions>(createTheme({}));
+  const [error, setError] = useState<string | null>();
 
   const formik = useFormik({
     initialValues: {
       projektName: "",
-      projektLogo: "https://d1myhw8pp24x4f.cloudfront.net/software_logo/1513077366_Avalara-logo_mid.png",
-      projektTheme: `{
+      projektLogo: "",
+      projektLightTheme: `{
   "palette": {
-    "primary": {
-      "light": "#9c786c",
-      "main": "#6d4c41",
-      "dark": "#40241a",
-      "contrastText": "#fff"
+    "mode":"light",
+    "primary": { 
+      "main": "#6d4c41"
     },
     "secondary": {
-      "light": "#efdcd5",
-      "main": "#bcaaa4",
-      "dark": "#8c7b75",
-      "contrastText": "#000"
+      "main": "#bcaaa4"
+    }
+  }
+}`,
+      projektDarkTheme: `{
+  "palette": {
+    "mode":"dark",
+    "primary": { 
+      "main": "#6d4c41"
+    },
+    "secondary": {
+      "main": "#bcaaa4"
     }
   }
 }`,
@@ -59,6 +75,23 @@ const Initialise = () => {
       alert(JSON.stringify(values, null, 2));
     },
   });
+
+  useEffect(() => {
+    try {
+      const newTheme = createTheme(
+        JSONParse(darkMode ? formik.values.projektDarkTheme : formik.values.projektLightTheme)
+      );
+      setTheme(newTheme);
+      setError(null);
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }, [darkMode, formik.values.projektDarkTheme, formik.values.projektLightTheme, setTheme, setError]);
+
+  const handleChange = () => {
+    setDarkMode((darkMode) => !darkMode);
+    formik.dirty = true;
+  };
 
   return (
     <Fade in>
@@ -117,8 +150,8 @@ const Initialise = () => {
             </Alert>
             <Typography sx={{ fontWeight: "bold" }}> Customisation</Typography>
             <TextField
-              required
               id="projektLogo"
+              helperText="Ideal logo size is 150px by 54px"
               label={`Projekt Logo ${formik.errors.projektLogo ? formik.errors.projektLogo : ""}`}
               placeholder="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png"
               onChange={formik.handleChange}
@@ -128,30 +161,67 @@ const Initialise = () => {
             />
             <Grid container>
               <Grid item md={6} sm={12}>
-                <TextField
-                  fullWidth
-                  rows={16}
-                  id="projektTheme"
-                  label={`Projekt Theme ${formik.errors.projektTheme ? formik.errors.projektTheme : ""}`}
-                  defaultValue={formik.values.projektTheme}
-                  multiline
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  disabled={offline}
-                  spellCheck={false}
-                  inputProps={{
-                    sx: { fontFamily: "Courier", fontWeight: 800 },
-                  }}
-                  error={formik.touched.projektTheme && formik.errors.projektTheme ? true : false}
-                />
+                <Toolbar variant="dense" disableGutters>
+                  <Box sx={{ flexGrow: 1 }} />
+                  <FormControlLabel
+                    control={<Switch checked={darkMode} onChange={handleChange} name="darkMode" />}
+                    label={darkMode ? "Dark" : "Light"}
+                  />
+                </Toolbar>
+                {!darkMode ? (
+                  <TextField
+                    fullWidth
+                    rows={14}
+                    id="projektLightTheme"
+                    label={`Light Theme`}
+                    value={formik.values.projektLightTheme || ""}
+                    multiline
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    disabled={offline}
+                    spellCheck={false}
+                    inputProps={{
+                      sx: { fontFamily: "Courier", fontWeight: 800 },
+                    }}
+                    error={formik.touched.projektLightTheme && formik.errors.projektLightTheme ? true : false}
+                  />
+                ) : (
+                  <TextField
+                    fullWidth
+                    rows={14}
+                    id="projektDarkTheme"
+                    label={`Dark Theme`}
+                    value={formik.values.projektDarkTheme || ""}
+                    multiline
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    disabled={offline}
+                    spellCheck={false}
+                    inputProps={{
+                      sx: { fontFamily: "Courier", fontWeight: 800 },
+                    }}
+                    error={formik.touched.projektDarkTheme && formik.errors.projektDarkTheme ? true : false}
+                  />
+                )}
               </Grid>
               <Grid item md={6} sm={12}>
                 <Box sx={{ ml: 2, height: 398 }}>
-                  <ColorDemo
-                    theme={createTheme(JSONParse(formik.values.projektTheme) || {})}
-                    title={formik.values.projektName}
-                    logo={formik.values.projektLogo}
-                  />
+                  <ErrorBoundary>
+                    {error ? (
+                      <Box
+                        sx={{
+                          height: "100%",
+                          width: "100%",
+                          color: "red",
+                          fontFamily: "courier",
+                        }}
+                      >
+                        {error}
+                      </Box>
+                    ) : (
+                      <ColorDemo theme={theme} title={formik.values.projektName} logo={formik.values.projektLogo} />
+                    )}
+                  </ErrorBoundary>
                 </Box>
               </Grid>
             </Grid>

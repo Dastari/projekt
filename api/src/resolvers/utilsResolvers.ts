@@ -40,10 +40,10 @@ export class UtilsResolver {
       },
     });
 
-    await prisma.role.deleteMany({});
-    const role = await prisma.role.create({
+    await prisma.permission.deleteMany({});
+    const permission = await prisma.permission.create({
       data: {
-        name: "Site Administrator",
+        name: "Global Administrator",
       },
     });
 
@@ -53,7 +53,7 @@ export class UtilsResolver {
         email: email,
         name: name,
         password: await hash(passphrase, SALT),
-        roleName: role.name,
+        permissions: { connect: { name: "Global Administrator" } },
       },
     });
 

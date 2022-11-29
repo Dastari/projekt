@@ -11,8 +11,8 @@
     "check": "npx npm-check-updates",
     "update": "npx npm-check-updates -u ",
     "generate": "SKIP_PRISMA_VERSION_CHECK=true npx prisma generate",
-    "push":"SKIP_PRISMA_VERSION_CHECK=true npx prisma push",
-    "seed": "npx prisma db seed",
+    "push":"SKIP_PRISMA_VERSION_CHECK=true npx prisma db push",
+    "seed": "SKIP_PRISMA_VERSION_CHECK=true npx prisma db seed",
     "dev": "npx nodemon ./src/index.ts",
     "studio": "npx prisma studio"
   },

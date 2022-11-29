@@ -1,7 +1,7 @@
 import { useEffect, useState, lazy } from "react";
 
 import { gql, useQuery } from "@apollo/client";
-import { Box, CssBaseline } from "@mui/material";
+import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { Error, Header, Loading } from "@/components";
@@ -32,6 +32,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      {/* <ThemeProvider theme={{}}> */}
       <CssBaseline />
       <Header />
       <Box
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
         </Routes>
       </Box>
+      {/* </ThemeProvider> */}
     </BrowserRouter>
   );
 };
